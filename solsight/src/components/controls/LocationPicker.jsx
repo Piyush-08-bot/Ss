@@ -11,10 +11,11 @@ export default function LocationPicker() {
   const setNasaData    = useSceneStore((s) => s.setNasaData);
   const setNasaLoading = useSceneStore((s) => s.setNasaLoading);
 
-  const [query,   setQuery]   = useState("");
-  const [results, setResults] = useState([]);
-  const [open,    setOpen]    = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [query,       setQuery]       = useState("");
+  const [results,     setResults]     = useState([]);
+  const [open,        setOpen]        = useState(false);
+  const [loading,     setLoading]     = useState(false);
+  const [searchError, setSearchError] = useState(false);
   const debounceRef = useRef(null);
   const wrapperRef  = useRef(null);
 
@@ -31,13 +32,21 @@ export default function LocationPicker() {
     if (q.trim().length < 2) { setResults([]); setOpen(false); return; }
     debounceRef.current = setTimeout(async () => {
       setLoading(true);
+      setSearchError(false);
       try {
         const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=5&addressdetails=1`;
         const res  = await fetch(url, { headers: { "Accept-Language": "en" } });
+        if (!res.ok) throw new Error(`Nominatim HTTP ${res.status}`);
         const data = await res.json();
         setResults(data);
-        setOpen(data.length > 0);
-      } catch { setResults([]); }
+        setOpen(true);
+        if (data.length === 0) setSearchError(false); // no results, not an error
+      } catch (err) {
+        console.error("[SolSight GEO] Search failed:", err.message);
+        setResults([]);
+        setOpen(true);  // keep open to show error state
+        setSearchError(true);
+      }
       finally { setLoading(false); }
     }, 350);
   }, []);
@@ -49,8 +58,13 @@ export default function LocationPicker() {
     const lon = parseFloat(item.lon);
     const name = item.address?.city || item.address?.town || item.display_name.split(",")[0];
     const country = item.address?.country || "";
-    setLocation(lat, lon, country ? `${name}, ${country}` : name);
-    setQuery(""); setResults([]); setOpen(false);
+    const displayName = country ? `${name}, ${country}` : name;
+
+    // Debug log — verify resolved coordinates in browser console
+    console.log(`[SolSight GEO] Location selected: "${displayName}" → { lat: ${lat}, lon: ${lon} }`);
+
+    setLocation(lat, lon, displayName);
+    setQuery(""); setResults([]); setOpen(false); setSearchError(false);
     setNasaLoading(true);
     const data = await fetchNASAData(lat, lon);
     setNasaData(data);
@@ -97,7 +111,7 @@ export default function LocationPicker() {
       )}
 
       {/* Dropdown */}
-      {open && results.length > 0 && (
+      {open && (
         <div style={{
           position: "absolute",
           top: "100%",
@@ -112,29 +126,42 @@ export default function LocationPicker() {
           maxHeight: "240px",
           overflowY: "auto",
         }}>
-          {results.map((item) => (
-            <button
-              key={item.place_id}
-              onClick={() => selectResult(item)}
-              style={{
-                width: "100%", textAlign: "left",
-                padding: "9px 12px",
-                background: "none", border: "none",
-                borderBottom: "1px solid #F5F5F5",
-                cursor: "pointer",
-                fontFamily: "'Inter', sans-serif",
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.background = "#F7F6F2")}
-              onMouseLeave={(e) => (e.currentTarget.style.background = "none")}
-            >
-              <p style={{ fontSize: "12px", fontWeight: 500, color: "#242424", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                {item.address?.city || item.address?.town || item.display_name.split(",")[0]}
+          {searchError ? (
+            <div style={{ padding: "10px 12px" }}>
+              <p style={{ fontSize: "12px", color: "#9B2335", fontWeight: 500 }}>⚠️ Location search failed</p>
+              <p style={{ fontSize: "10px", color: "#ADADAD", marginTop: "2px" }}>
+                Check your internet connection and try again.
               </p>
-              <p style={{ fontSize: "10px", color: "#ADADAD", marginTop: "2px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                {item.display_name}
-              </p>
-            </button>
-          ))}
+            </div>
+          ) : results.length === 0 ? (
+            <div style={{ padding: "10px 12px" }}>
+              <p style={{ fontSize: "12px", color: "#ADADAD" }}>No results found.</p>
+            </div>
+          ) : (
+            results.map((item) => (
+              <button
+                key={item.place_id}
+                onClick={() => selectResult(item)}
+                style={{
+                  width: "100%", textAlign: "left",
+                  padding: "9px 12px",
+                  background: "none", border: "none",
+                  borderBottom: "1px solid #F5F5F5",
+                  cursor: "pointer",
+                  fontFamily: "'Inter', sans-serif",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = "#F7F6F2")}
+                onMouseLeave={(e) => (e.currentTarget.style.background = "none")}
+              >
+                <p style={{ fontSize: "12px", fontWeight: 500, color: "#242424", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  {item.address?.city || item.address?.town || item.display_name.split(",")[0]}
+                </p>
+                <p style={{ fontSize: "10px", color: "#ADADAD", marginTop: "2px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  {item.display_name}
+                </p>
+              </button>
+            ))
+          )}
         </div>
       )}
     </div>

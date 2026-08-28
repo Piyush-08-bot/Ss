@@ -1,14 +1,15 @@
 /**
  * sunPosition.js
  * Pure-math solar position calculator.
- * No external dependencies.
+ * No external dependencies (timezone lookup handled in timezone.js).
  *
- * Given a lat, lon, JS Date, and a decimal hour (e.g. 14.5 = 14:30),
+ * Given a lat, lon, JS Date, and a decimal hour (e.g. 14.5 = 14:30 LOCAL clock time),
  * returns the sun's { azimuth, elevation } in degrees.
  *
  * Algorithm: NOAA Solar Calculator equations
  * https://gml.noaa.gov/grad/solcalc/solareqns.PDF
  */
+import { getUtcOffsetHours } from "./timezone";
 
 const toRad = (deg) => (deg * Math.PI) / 180;
 const toDeg = (rad) => (rad * 180) / Math.PI;
@@ -59,15 +60,15 @@ export function getSunPosition(lat, lon, date, timeHour) {
     0.002697 * Math.cos(3 * gamma) +
     0.00148 * Math.sin(3 * gamma);
 
-  // ── UTC correction ────────────────────────────────────────────
-  // The NOAA formula needs UTC time, but the slider shows local clock time.
-  // We approximate the UTC offset from longitude: every 15° east = +1 hour.
-  // e.g. India (lon≈77–88°E) → utcOffset ≈ +5.1 to +5.9 h  (actual IST = +5.5)
-  // Subtracting this gives a UTC hour close enough for solar geometry.
-  const utcOffset = lon / 15;          // approximate hours ahead of UTC
+  // ── UTC correction ─────────────────────────────────────────────────
+  // The NOAA formula needs UTC time. We resolve the real civil UTC offset
+  // using tz-lookup → IANA timezone → Intl.DateTimeFormat (DST-aware).
+  // e.g. Chicago in August (CDT) → -5.0h  (NOT lon/15 = -5.842h)
+  //      New Delhi (IST year-round) → +5.5h (NOT lon/15 = +5.14h)
+  const utcOffset = getUtcOffsetHours(lat, lon, date);
   const utcHour   = timeHour - utcOffset;
 
-  // True solar time offset (minutes) — uses UTC input
+  // True solar time offset (minutes) — uses UTC input + longitude correction
   const timeOffset = eqtime + 4 * lon;
 
   // True solar time (minutes from midnight UTC)
@@ -96,7 +97,10 @@ export function getSunPosition(lat, lon, date, timeHour) {
       (Math.sin(latRad) * cosZenith - Math.sin(decl)) /
       (Math.cos(latRad) * sinZenith);
     const azRaw = toDeg(Math.acos(Math.max(-1, Math.min(1, cosAzRaw))));
-    azimuth = ha > 0 ? 360 - azRaw : azRaw;
+    // NOAA spec: ha>0 → afternoon (sun west of south) → azRaw+180
+    //            ha≤0 → morning  (sun east of south) → 540-azRaw (mod 360)
+    // This matches https://gml.noaa.gov/grad/solcalc/main.js exactly.
+    azimuth = ha > 0 ? (azRaw + 180) % 360 : (540 - azRaw) % 360;
   }
 
   return { azimuth, elevation };
