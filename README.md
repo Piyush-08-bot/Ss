@@ -1,4 +1,4 @@
-# SolSight — 3D Rooftop Solar & Sunlight Visualization
+# SolSight 
 
 SolSight is an interactive, browser-based 3D rooftop simulation tool designed to visually demonstrate how sunlight and shadow angles evolve across a rooftop throughout the day and year. Built with real astronomical formulas (NOAA solar calculator) and historical climate data from NASA POWER.
 
