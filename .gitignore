@@ -1,0 +1,14 @@
+# Logs
+logs
+*.log
+
+# Dependencies & Build
+node_modules
+dist
+dist-ssr
+*.local
+
+# macOS & Editor files
+.DS_Store
+.vscode
+.idea
