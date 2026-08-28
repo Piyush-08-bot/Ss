@@ -1,7 +1,3 @@
-/**
- * SunMarker.jsx
- * A small sphere that tracks the sun's position in the 3D scene.
- */
 import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { useSunPosition } from "../../store/useSceneStore";

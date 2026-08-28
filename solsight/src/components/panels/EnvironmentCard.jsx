@@ -1,6 +1,3 @@
-/**
- * EnvironmentCard.jsx — inline-styled NASA POWER data card
- */
 import { useEffect } from "react";
 import useSceneStore from "../../store/useSceneStore";
 import { fetchNASAData } from "../../utils/nasaPower";
@@ -51,7 +48,6 @@ export default function EnvironmentCard() {
         </div>
       ) : (
         <div>
-          {/* Radiation */}
           <div style={{ marginBottom: "14px" }}>
             <p style={{ fontSize: "10px", fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "#ADADAD", marginBottom: "3px" }}>
               Solar Radiation
@@ -64,7 +60,6 @@ export default function EnvironmentCard() {
             </p>
           </div>
 
-          {/* Temperature */}
           <div style={{ marginBottom: "14px" }}>
             <p style={{ fontSize: "10px", fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "#ADADAD", marginBottom: "3px" }}>
               Avg Temperature

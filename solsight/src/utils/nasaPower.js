@@ -1,18 +1,5 @@
-/**
- * nasaPower.js
- * Fetch average solar radiation + temperature from NASA POWER API.
- * Caches per session using a Map keyed by "lat,lon" (rounded to 2dp).
- *
- * API docs: https://power.larc.nasa.gov/docs/services/api/
- */
-
 const cache = new Map();
 
-/**
- * @param {number} lat
- * @param {number} lon
- * @returns {Promise<{ radiation: number, temperature: number } | null>}
- */
 export async function fetchNASAData(lat, lon) {
   const key = `${lat.toFixed(2)},${lon.toFixed(2)}`;
 
@@ -20,9 +7,6 @@ export async function fetchNASAData(lat, lon) {
     return cache.get(key);
   }
 
-  // Parameters:
-  //   ALLSKY_SFC_SW_DWN  — All-sky surface shortwave downward irradiance (kWh/m²/day)
-  //   T2M               — Temperature at 2m height (°C)
   const params = new URLSearchParams({
     parameters: "ALLSKY_SFC_SW_DWN,T2M",
     community: "RE",
@@ -43,7 +27,6 @@ export async function fetchNASAData(lat, lon) {
     const props = json?.properties?.parameter;
     if (!props) throw new Error("Unexpected NASA response shape");
 
-    // Average across all months (keys: "JAN","FEB",..."DEC","ANN")
     const radiation = props.ALLSKY_SFC_SW_DWN?.ANN ?? null;
     const temperature = props.T2M?.ANN ?? null;
 

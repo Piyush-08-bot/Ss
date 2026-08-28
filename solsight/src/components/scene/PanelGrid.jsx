@@ -1,33 +1,23 @@
-/**
- * PanelGrid.jsx
- * A grid of solar panel mockups on the rooftop.
- * Each panel is a thin box with a dark blue/steel material.
- * Panels receive shadows to make shading visible.
- */
 import useSceneStore from "../../store/useSceneStore";
 
-// Standard panel dimensions (meters)
 const PANEL_W = 1.65;
 const PANEL_D = 0.99;
 const PANEL_H = 0.05;
 const PANEL_GAP_X = 0.15;
 const PANEL_GAP_Z = 0.25;
-const PANEL_TILT = 0.18; // radians (~10°)
+const PANEL_TILT = 0.18;
 
 export default function PanelGrid() {
   const roofWidth = useSceneStore((s) => s.roofWidth);
   const roofDepth = useSceneStore((s) => s.roofDepth);
 
-  // Available space with margin from parapet
   const margin = 0.6;
   const usableW = roofWidth - margin * 2;
   const usableD = roofDepth - margin * 2;
 
-  // How many panels fit?
   const cols = Math.floor(usableW / (PANEL_W + PANEL_GAP_X));
   const rows = Math.floor(usableD / (PANEL_D + PANEL_GAP_Z));
 
-  // Center the grid
   const totalW = cols * (PANEL_W + PANEL_GAP_X) - PANEL_GAP_X;
   const totalD = rows * (PANEL_D + PANEL_GAP_Z) - PANEL_GAP_Z;
   const startX = -totalW / 2 + PANEL_W / 2;
@@ -46,12 +36,10 @@ export default function PanelGrid() {
     <group>
       {panels.map(({ x, z, key }) => (
         <group key={key} position={[x, 0.04, z]} rotation={[-PANEL_TILT, 0, 0]}>
-          {/* Panel frame */}
           <mesh castShadow receiveShadow>
             <boxGeometry args={[PANEL_W, PANEL_H, PANEL_D]} />
             <meshLambertMaterial color="#2C3E6E" />
           </mesh>
-          {/* Panel surface (slightly reflective cells) */}
           <mesh position={[0, PANEL_H / 2 + 0.001, 0]} receiveShadow>
             <planeGeometry args={[PANEL_W - 0.04, PANEL_D - 0.04]} />
             <meshPhongMaterial
@@ -60,7 +48,6 @@ export default function PanelGrid() {
               specular="#6688BB"
             />
           </mesh>
-          {/* Panel mounting legs (subtle) */}
           <mesh
             position={[0, -0.04, 0]}
             rotation={[-Math.PI / 2, 0, 0]}

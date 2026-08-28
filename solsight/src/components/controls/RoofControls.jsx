@@ -1,8 +1,3 @@
-/**
- * RoofControls.jsx
- * Simple width + depth inputs for the rooftop.
- * Changing values updates the 3D scene and all calculations live.
- */
 import useSceneStore from "../../store/useSceneStore";
 
 const inputStyle = {
@@ -35,7 +30,6 @@ export default function RoofControls() {
 
   return (
     <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-      {/* Roof icon */}
       <svg width="14" height="13" viewBox="0 0 24 22" fill="none" stroke="#6B6B6B" strokeWidth="2">
         <polygon points="12,2 22,10 22,20 2,20 2,10" />
         <line x1="2" y1="10" x2="22" y2="10" />

@@ -1,7 +1,3 @@
-/**
- * SceneCanvas.jsx
- * Main React Three Fiber canvas.
- */
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Sky } from "@react-three/drei";
 import { Suspense } from "react";

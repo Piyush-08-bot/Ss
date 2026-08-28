@@ -1,6 +1,3 @@
-/**
- * SiteSummary.jsx — inline-styled side panel
- */
 import useSceneStore, { useSunPosition } from "../../store/useSceneStore";
 import { formatHour } from "../../utils/sunPosition";
 
@@ -43,7 +40,6 @@ export default function SiteSummary() {
   const elev      = elevation.toFixed(1);
   const az        = azimuth.toFixed(1);
 
-  // Compass direction from azimuth
   const compassDir = (az) => {
     const a = parseFloat(az);
     if (a < 22.5 || a >= 337.5) return "N";
@@ -58,24 +54,20 @@ export default function SiteSummary() {
 
   return (
     <div style={{ padding: "16px" }}>
-      {/* Section heading */}
       <p style={{ fontSize: "10px", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "#ADADAD", marginBottom: "12px" }}>
         Site Summary
       </p>
 
-      {/* Date */}
       <div style={row}>
         <p style={label}>Simulation Date</p>
         <p style={value}>{MONTHS[selectedMonth - 1]} {selectedDay}</p>
       </div>
 
-      {/* Time */}
       <div style={row}>
         <p style={label}>Current Time</p>
         <p style={value}>{formatHour(currentTime)}</p>
       </div>
 
-      {/* Sun elevation + azimuth */}
       <div style={row}>
         <p style={label}>Sun Position</p>
         <div style={{ display: "flex", gap: "12px", marginTop: "2px", flexWrap: "wrap" }}>
@@ -85,13 +77,11 @@ export default function SiteSummary() {
         </div>
       </div>
 
-      {/* Roof area */}
       <div style={row}>
         <p style={label}>Roof Area</p>
         <p style={value}>{roofArea} m²</p>
       </div>
 
-      {/* Panels */}
       <div style={row}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
           <p style={label}>Panels</p>
@@ -100,7 +90,6 @@ export default function SiteSummary() {
         <p style={value}>{panels} <span style={subval}>≈ {kw} kW</span></p>
       </div>
 
-      {/* Sun exposure */}
       <div style={row}>
         <p style={label}>Sun Exposure</p>
         <div style={{ display: "flex", alignItems: "center", gap: "8px", marginTop: "2px" }}>
@@ -114,14 +103,12 @@ export default function SiteSummary() {
         </div>
       </div>
 
-      {/* Shadow coverage */}
       <div style={{ paddingTop: "10px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
           <p style={label}>Shadow Coverage</p>
           <span style={{ fontSize: "10px", color: "#ADADAD", fontStyle: "italic" }}>approx.</span>
         </div>
         <p style={{ ...value, marginTop: "2px" }}>~{shadow}%</p>
-        {/* Progress bar */}
         <div style={{ height: "3px", background: "#EBEBEB", borderRadius: "2px", marginTop: "8px", overflow: "hidden" }}>
           <div style={{
             height: "100%", background: "#242424",

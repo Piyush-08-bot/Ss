@@ -1,6 +1,3 @@
-/**
- * LocationPicker.jsx — inline-styled city search
- */
 import { useState, useCallback, useRef, useEffect } from "react";
 import useSceneStore from "../../store/useSceneStore";
 import { fetchNASAData } from "../../utils/nasaPower";
@@ -40,11 +37,11 @@ export default function LocationPicker() {
         const data = await res.json();
         setResults(data);
         setOpen(true);
-        if (data.length === 0) setSearchError(false); // no results, not an error
+        if (data.length === 0) setSearchError(false);
       } catch (err) {
         console.error("[SolSight GEO] Search failed:", err.message);
         setResults([]);
-        setOpen(true);  // keep open to show error state
+        setOpen(true);
         setSearchError(true);
       }
       finally { setLoading(false); }
@@ -60,8 +57,7 @@ export default function LocationPicker() {
     const country = item.address?.country || "";
     const displayName = country ? `${name}, ${country}` : name;
 
-    // Debug log — verify resolved coordinates in browser console
-    console.log(`[SolSight GEO] Location selected: "${displayName}" → { lat: ${lat}, lon: ${lon} }`);
+    console.log(`[SolSight GEO] Selected: "${displayName}" → { lat: ${lat}, lon: ${lon} }`);
 
     setLocation(lat, lon, displayName);
     setQuery(""); setResults([]); setOpen(false); setSearchError(false);
@@ -72,7 +68,6 @@ export default function LocationPicker() {
 
   return (
     <div ref={wrapperRef} style={{ position: "relative", display: "flex", alignItems: "center", gap: "10px" }}>
-      {/* Location icon + city name */}
       <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" strokeWidth="2">
           <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
@@ -86,7 +81,6 @@ export default function LocationPicker() {
         </div>
       </div>
 
-      {/* Search input */}
       <input
         type="text"
         value={query}
@@ -110,7 +104,6 @@ export default function LocationPicker() {
         <span style={{ fontSize: "10px", color: "#ADADAD", position: "absolute", right: "8px", top: "50%", transform: "translateY(-50%)" }}>…</span>
       )}
 
-      {/* Dropdown */}
       {open && (
         <div style={{
           position: "absolute",

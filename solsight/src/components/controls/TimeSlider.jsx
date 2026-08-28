@@ -1,6 +1,3 @@
-/**
- * TimeSlider.jsx — inline-styled time control bar
- */
 import { useEffect, useRef } from "react";
 import useSceneStore from "../../store/useSceneStore";
 import { formatHour } from "../../utils/sunPosition";
@@ -55,7 +52,6 @@ export default function TimeSlider() {
       height: "56px",
       boxSizing: "border-box",
     }}>
-      {/* Play/Pause */}
       <button
         onClick={togglePlay}
         aria-label={isPlaying ? "Pause" : "Play"}
@@ -87,10 +83,8 @@ export default function TimeSlider() {
         )}
       </button>
 
-      {/* Left time label */}
       <span style={{ fontSize: "11px", color: "#ADADAD", fontFamily: "monospace", flexShrink: 0 }}>06:00</span>
 
-      {/* Slider track */}
       <div style={{ flex: 1, position: "relative" }}>
         <input
           type="range"
@@ -106,10 +100,8 @@ export default function TimeSlider() {
         />
       </div>
 
-      {/* Right time label */}
       <span style={{ fontSize: "11px", color: "#ADADAD", fontFamily: "monospace", flexShrink: 0 }}>18:00</span>
 
-      {/* Current time */}
       <div style={{
         flexShrink: 0,
         minWidth: "48px",

@@ -1,8 +1,3 @@
-/**
- * DatePicker.jsx
- * A minimal month + day selector for seasonal sun simulation.
- * No external library — plain select inputs.
- */
 import useSceneStore from "../../store/useSceneStore";
 
 const MONTHS = [
@@ -10,7 +5,6 @@ const MONTHS = [
   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
 ];
 
-// Days per month (non-leap year; good enough for simulation)
 function daysInMonth(month) {
   return new Date(new Date().getFullYear(), month, 0).getDate();
 }
@@ -40,7 +34,6 @@ export default function DatePicker() {
   const handleMonthChange = (e) => {
     const newMonth = parseInt(e.target.value, 10);
     setSelectedMonth(newMonth);
-    // Clamp day if switching to a shorter month
     if (selectedDay > daysInMonth(newMonth)) {
       setSelectedDay(daysInMonth(newMonth));
     }
@@ -52,7 +45,6 @@ export default function DatePicker() {
 
   return (
     <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-      {/* Calendar icon */}
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" strokeWidth="2">
         <rect x="3" y="4" width="18" height="18" rx="2" />
         <line x1="16" y1="2" x2="16" y2="6" />
@@ -63,7 +55,6 @@ export default function DatePicker() {
       <div>
         <p style={{ fontSize: "9px", color: "#ADADAD", lineHeight: 1, marginBottom: "2px" }}>Date</p>
         <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-          {/* Month */}
           <select
             value={selectedMonth}
             onChange={handleMonthChange}
@@ -74,7 +65,6 @@ export default function DatePicker() {
             ))}
           </select>
 
-          {/* Day */}
           <select
             value={selectedDay}
             onChange={handleDayChange}

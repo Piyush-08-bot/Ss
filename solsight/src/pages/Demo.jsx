@@ -1,6 +1,3 @@
-/**
- * Demo.jsx — workspace layout with date picker in header
- */
 import { Suspense } from "react";
 import { Link } from "react-router-dom";
 import SceneCanvas from "../components/scene/SceneCanvas";
@@ -22,8 +19,6 @@ export default function Demo() {
       overflow: "hidden",
       fontFamily: "'Inter', sans-serif",
     }}>
-
-      {/* ── HEADER ─────────────────────────────── */}
       <header style={{
         flexShrink: 0,
         height: "56px",
@@ -36,7 +31,6 @@ export default function Demo() {
         zIndex: 10,
         gap: "16px",
       }}>
-        {/* Left: logo */}
         <div style={{ display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
           <Link to="/" style={{
             fontFamily: "'Space Grotesk', sans-serif",
@@ -50,7 +44,6 @@ export default function Demo() {
           <span style={{ fontSize: "12px", color: "#6B6B6B" }}>3D Solar Visualization</span>
         </div>
 
-        {/* Right controls: Roof + Date + Location */}
         <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
           <RoofControls />
           <div style={{ width: "1px", height: "32px", background: "#EBEBEB" }} />
@@ -60,10 +53,7 @@ export default function Demo() {
         </div>
       </header>
 
-      {/* ── MAIN WORKSPACE ────────────────────── */}
       <div style={{ display: "flex", flex: 1, minHeight: 0, overflow: "hidden" }}>
-
-        {/* 3D Canvas */}
         <div style={{ flex: 1, position: "relative", minWidth: 0 }}>
           <Suspense fallback={
             <div style={{
@@ -77,7 +67,6 @@ export default function Demo() {
             <SceneCanvas />
           </Suspense>
 
-          {/* Camera hint */}
           <div style={{
             position: "absolute", bottom: "16px", left: "16px",
             pointerEvents: "none",
@@ -92,7 +81,6 @@ export default function Demo() {
           </div>
         </div>
 
-        {/* ── SIDE PANEL ──────────────────────── */}
         <aside style={{
           flexShrink: 0,
           width: "256px",
@@ -119,11 +107,9 @@ export default function Demo() {
         </aside>
       </div>
 
-      {/* ── TIME SLIDER ───────────────────────── */}
       <div style={{ flexShrink: 0 }}>
         <TimeSlider />
       </div>
-
     </div>
   );
 }
